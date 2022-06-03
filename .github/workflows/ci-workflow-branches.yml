@@ -1,0 +1,25 @@
+name: CI Workflow Branches
+on:
+  push:
+    branches:
+      - '**'
+      - '!main'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+      - name: Maven Compile/Test/Package
+        run: mvn --activate-profiles prod package
+      - name: Merge branch
+        uses: devmasx/merge-branch@1.4.0
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
+ 

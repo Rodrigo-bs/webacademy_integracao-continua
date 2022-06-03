@@ -1,0 +1,25 @@
+name: Deploy Workflow
+
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch:
+      
+jobs:
+
+  ci:
+    name: CI Workflow Main
+    uses: ./.github/workflows/ci-workflow-main.yml
+
+  deploy-heroku:
+    needs: ci
+    runs-on: ubuntu-latest
+    name: Deploy Heroku
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: 'sgcmapi'
+          heroku_email: 'danielnsilva@gmail.com'
